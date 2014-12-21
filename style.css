@@ -44,7 +44,8 @@ a:active {
 
 .branding img {
     width: 5.5em;
-    padding: .3em;
+    padding: .1em;
+    height: 110px;
     margin-bottom: 20px;
     -webkit-background-size: 485px;
     -moz-background-size: 485px;
