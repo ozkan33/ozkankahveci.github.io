@@ -1,0 +1,160 @@
+<!--
+Credits:
+Loading Page CSS: https://discourse.threejs.org/u/mugen87/summary
+3D Macbook Object: 
+        -Creator: kreems
+        -link: https://sketchfab.com/3d-models/macintosh-128k-896ea439b67b4606a23fb8b93be6af6d
+Image matrix: http://getwallpapers.com/wallpaper/full/4/c/4/1479595-matrix-binary-code-falling-wallpaper-1920x1080-retina.jpg
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="loader.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+    />
+    <script crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="middle">
+      <a
+        class="btn"
+        href="https://www.facebook.com/kahveciozkan"
+        target="_blank"
+      >
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a class="btn" href="http://twitter.com/_ozkn_" target="_blank">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a
+        class="btn"
+        href="https://www.hackerrank.com/ozkankahveci"
+        target="_blank"
+      >
+        <i class="fab fa-hackerrank"></i>
+      </a>
+      <a
+        class="btn"
+        href="https://www.instagram.com/khvciozkan/"
+        target="_blank"
+      >
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a class="btn" href="http://github.com/ozkan33" target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <script src="three.min.js"></script>
+    <script src="jquery-2.1.4.min.js"></script>
+    <script src="OrbitControls.js"></script>
+    <script src="GLTFLoader.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/ColladaLoader.js"></script>
+
+    <section id="loading-screen">
+      <div id="loader"></div>
+    </section>
+
+    <script>
+      let scene,
+        camera,
+        renderer,
+        controls,
+        materialArray,
+        mac,
+        skybox,
+        loadingScreen;
+      const loadingManager = new THREE.LoadingManager(() => {
+        loadingScreen = document.getElementById("loading-screen");
+        loadingScreen.classList.add("fade-out");
+        loadingScreen.addEventListener("transitionend", onTransitionEnd);
+      });
+
+      const loader2 = new THREE.ColladaLoader(loadingManager);
+      loader2.load("http://www.ozkankahveci.com", collada => {
+        const animations = collada.animations;
+        const avatar = collada.scene;
+
+        mixer = new THREE.AnimationMixer(avatar);
+        const action = mixer.clipAction(animations[0]).play();
+
+        scene.add(avatar);
+      });
+
+      function onTransitionEnd(event) {
+        event.target.remove();
+      }
+      function init() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(
+          42,
+          window.innerWidth / window.innerHeight,
+          1,
+          10000
+        );
+        camera.filmGauge = 35;
+        //camera.position.set(5900, -300, -300);
+        camera.position.x = 2713.573548977686;
+        camera.position.y = 451.8447810139787;
+        camera.position.z = -200.3251900190721;
+
+        //camera.lookAt(scene.position);
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        controls = new THREE.OrbitControls(camera, animate.domElement);
+        controls.addEventListener("change", animate);
+        controls.minDistance = 500;
+        controls.maxDistance = 1500;
+
+        materialArray = [];
+        let texture_ft = new THREE.TextureLoader().load("binary.jpg");
+        let texture_bk = new THREE.TextureLoader().load("binary.jpg");
+        let texture_up = new THREE.TextureLoader().load("binary.jpg");
+        let texture_dn = new THREE.TextureLoader().load("binary.jpg");
+        let texture_rt = new THREE.TextureLoader().load("binary.jpg");
+        let texture_lf = new THREE.TextureLoader().load("binary.jpg");
+
+        materialArray.push(new THREE.MeshBasicMaterial({ map: texture_ft }));
+        materialArray.push(new THREE.MeshBasicMaterial({ map: texture_bk }));
+        materialArray.push(new THREE.MeshBasicMaterial({ map: texture_up }));
+        materialArray.push(new THREE.MeshBasicMaterial({ map: texture_dn }));
+        materialArray.push(new THREE.MeshBasicMaterial({ map: texture_rt }));
+        materialArray.push(new THREE.MeshBasicMaterial({ map: texture_lf }));
+
+        for (let i = 0; i < 6; i++) materialArray[i].side = THREE.BackSide;
+        let skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
+        skybox = new THREE.Mesh(skyboxGeo, materialArray);
+        scene.add(skybox);
+
+        //Lights For Desk
+
+        ambientlight = new THREE.AmbientLight(0xfffffd, 1.4);
+        scene.add(ambientlight);
+
+        light = new THREE.PointLight(0xc4c4c4, 2, 1);
+        light.position.set(-1000, 300, -500);
+        scene.add(light);
+        let loader = new THREE.GLTFLoader();
+        loader.load("scene.gltf", function(gltf) {
+          mac = gltf.scene.children[0];
+          mac.scale.set(4.85, 4.85, 4.85);
+          mac.position.x = -1000;
+          mac.position.z = -150;
+          mac.position.y = -5000;
+          scene.add(gltf.scene);
+          camera.lookAt(mac.position);
+          animate();
+        });
+      }
+      function animate() {
+        renderer.render(scene, camera);
+        //requestAnimationFrame(animate);
+      }
+      init();
+    </script>
+  </body>
+</html>
