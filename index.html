@@ -148,11 +148,17 @@ Image matrix: http://getwallpapers.com/wallpaper/full/4/c/4/1479595-matrix-binar
           scene.add(gltf.scene);
           camera.lookAt(mac.position);
           animate();
+          window.addEventListener("resize", onWindowResize, false);
         });
       }
       function animate() {
         renderer.render(scene, camera);
         //requestAnimationFrame(animate);
+      }
+       function onWindowResize() {
+       camera.aspect = window.innerWidth / window.innerHeight;
+       camera.updateProjectionMatrix();
+       renderer.setSize(window.innerWidth, window.innerHeight);
       }
       init();
     </script>
