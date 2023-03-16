@@ -68,14 +68,16 @@ Image matrix: http://getwallpapers.com/wallpaper/full/4/c/4/1479595-matrix-binar
     </section>
 
     <script>
-      let scene,
-        camera,
-        renderer,
-        controls,
-        materialArray,
-        mac,
-        skybox,
-        loadingScreen;
+            let scene,
+          camera,
+          renderer,
+          controls,
+          materialArray,
+          mac,
+          skybox,
+          loadingScreen,
+          mixer;
+
       const loadingManager = new THREE.LoadingManager(() => {
         loadingScreen = document.getElementById("loading-screen");
         loadingScreen.classList.add("fade-out");
@@ -115,7 +117,7 @@ Image matrix: http://getwallpapers.com/wallpaper/full/4/c/4/1479595-matrix-binar
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        controls = new THREE.OrbitControls(camera, animate.domElement);
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.addEventListener("change", animate);
         controls.minDistance = 500;
         controls.maxDistance = 1500;
@@ -142,16 +144,17 @@ Image matrix: http://getwallpapers.com/wallpaper/full/4/c/4/1479595-matrix-binar
 
         //Lights For Desk
 
-        ambientlight = new THREE.AmbientLight(0xfffffd, 1.4);
+        const ambientlight = new THREE.AmbientLight(0xfffffd, 1.4);
         scene.add(ambientlight);
 
-        light = new THREE.PointLight(0xc4c4c4, 2, 1);
+        const light = new THREE.PointLight(0xc4c4c4, 2, 1);
         light.position.set(-1000, 300, -500);
         scene.add(light);
-        let loader = new THREE.GLTFLoader();
+        const loader = new THREE.GLTFLoader();
         loader.load("scene.gltf", function(gltf) {
           mac = gltf.scene.children[0];
-          mac.scale.set(4.85, 4.85, 4.85);
+          mac.scale.set(4.85, 4.85,4.85);
+
           mac.position.x = -1000;
           mac.position.z = -150;
           mac.position.y = -5000;
